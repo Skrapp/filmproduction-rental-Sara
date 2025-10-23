@@ -1,5 +1,10 @@
 package com.nilsson.rental;
 
+import com.nilsson.rental.dao.*;
+import com.nilsson.rental.entity.*;
+import com.nilsson.rental.pricepolicy.*;
+import com.nilsson.rental.service.*;
+
 public class Main {
 
 /*Du har fått en provanställning på Wigellkoncernen och som första uppdrag ska du bygga
@@ -19,6 +24,11 @@ unika attribut och metoder enligt det vi pratat om.
 uthyrning. Summera intäkter
 */
     public static void main(String[] args) {
+
+        Member m1 = new Member("Lova", new Premium(), true);
+        Member m2 = new Member("Clara", new Standard(), false);
+
+
 
     }
 }
