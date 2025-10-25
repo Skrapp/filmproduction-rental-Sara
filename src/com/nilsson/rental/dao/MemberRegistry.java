@@ -7,22 +7,21 @@ import java.util.TreeSet;
 
 public class MemberRegistry {
     /*• Inventory och MemberRegistry (hanteras i minnet via List, Map eller Set)*/
-    Set<Member> memberRegistry;
-    //TODO är treeset rätt eller ska det bara 
+    Set<Member> memberList;
 
     public MemberRegistry(){
-        memberRegistry = new TreeSet<>();
+        memberList = new TreeSet<Member>();
     }
 
-    public Set<Member> getMemberRegistry() {
-        return memberRegistry;
+    public Set<Member> getMemberList() {
+        return memberList;
     }
 
-    public void setMemberRegistry(Set<Member> memberRegistry) {
-        this.memberRegistry = memberRegistry;
+    public void setMemberList(Set<Member> memberList) {
+        this.memberList = memberList;
     }
 
     public void addMember(Member member){
-        memberRegistry.add(member);
+        memberList.add(member);
     }
 }

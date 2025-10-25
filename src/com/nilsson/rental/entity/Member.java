@@ -2,19 +2,17 @@ package com.nilsson.rental.entity;
 
 import com.nilsson.rental.pricepolicy.PricePolicy;
 
-public class Member {
+public class Member implements Comparable<Member>{
     /*• Member (id, namn, status/level, historik)*/
     private static long idCounter = 0;
-    private String id;
+    private final String id;
     private String name;
     private PricePolicy status;
-    private boolean admin;
 
-    public Member(String name, PricePolicy status, boolean isAdmin) {
+    public Member(String name, PricePolicy status) {
         this();
         this.name = name;
         this.status = status;
-        this.admin = isAdmin;
     }
 
     public Member() {
@@ -45,11 +43,18 @@ public class Member {
         this.status = status;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    //Sorterar enligt namn
+    @Override
+    public int compareTo(Member otherMember) {
+        return this.name.compareTo(otherMember.getName());
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

@@ -3,7 +3,8 @@ package com.nilsson.rental;
 import com.nilsson.rental.dao.*;
 import com.nilsson.rental.entity.*;
 import com.nilsson.rental.pricepolicy.*;
-import com.nilsson.rental.service.*;
+
+import java.util.Scanner;
 
 public class Main {
 
@@ -22,13 +23,26 @@ unika attribut och metoder enligt det vi pratat om.
 • RentalService och MembershipService ska innehålla affärslogiken
 • Konsolmeny: lägg till/sök/ändra medlemmar. Lista/filtrera items. Boka/avsluta
 uthyrning. Summera intäkter
+
+applikationen används i klubben, där man i en meny kan komma åt och hantera medlemmar och inventariet av produkter,
+samt att skapa ny och hantera befintliga uthyrningar.
 */
     public static void main(String[] args) {
 
-        Member m1 = new Member("Lova", new Premium(), true);
-        Member m2 = new Member("Clara", new Standard(), false);
+        Member m1 = new Member("Lova", new Premium());
+        Member m2 = new Member("Clara", new Standard());
 
+        MemberRegistry memberRegistry = new MemberRegistry();
+        memberRegistry.addMember(m1);
+        memberRegistry.addMember(m2);
 
+        KonsolMenu konsolMenu = new KonsolMenu(new Scanner(System.in));
+        konsolMenu.getMembershipService().getMemberRegistry().addMember(m1);
+        konsolMenu.getMembershipService().getMemberRegistry().addMember(m2);
+
+        konsolMenu.mainMenu();
+
+        System.out.println(konsolMenu.getMembershipService().getMemberRegistry().getMemberList());
 
     }
 }
