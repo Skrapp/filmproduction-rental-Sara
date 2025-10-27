@@ -31,14 +31,13 @@ samt att skapa ny och hantera befintliga uthyrningar.
 
         Member m1 = new Member("Lova", new Premium());
         Member m2 = new Member("Clara", new Standard());
+        Member m3 = new Member("Simon", new Student());
 
-        MemberRegistry memberRegistry = new MemberRegistry();
-        memberRegistry.addMember(m1);
-        memberRegistry.addMember(m2);
 
         KonsolMenu konsolMenu = new KonsolMenu(new Scanner(System.in));
-        konsolMenu.getMembershipService().getMemberRegistry().addMember(m1);
-        konsolMenu.getMembershipService().getMemberRegistry().addMember(m2);
+        konsolMenu.getMembershipService().addMember(m1);
+        konsolMenu.getMembershipService().addMember(m2);
+        konsolMenu.getMembershipService().addMember(m3);
 
         konsolMenu.mainMenu();
 

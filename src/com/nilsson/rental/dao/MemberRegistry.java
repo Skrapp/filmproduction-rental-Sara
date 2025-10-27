@@ -2,6 +2,7 @@ package com.nilsson.rental.dao;
 
 import com.nilsson.rental.entity.Member;
 
+import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,5 +24,20 @@ public class MemberRegistry {
 
     public void addMember(Member member){
         memberList.add(member);
+    }
+
+    public void removeMember(Member member){
+        memberList.remove(member);
+    }
+
+    public void printMemberList(){
+        //Default ordning på lista skrivs ut
+        for(Member member : memberList){
+            System.out.println(member);
+        }
+    }
+
+    public void printMemberList(Comparator<Member> memberComparator){
+        //Beroende på comparator skrivs listan ut
     }
 }
