@@ -1,4 +1,4 @@
-package com.nilsson.rental.entity;
+package com.nilsson.rental.entity.items;
 
 public abstract class Item {
     /*• Item (abstract)  Subklasser som ex. Vehicle, Tool, SportGear eller liknande
