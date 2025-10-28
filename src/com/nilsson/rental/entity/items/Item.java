@@ -4,8 +4,6 @@ public abstract class Item {
     /*• Item (abstract)  Subklasser som ex. Vehicle, Tool, SportGear eller liknande
 beroende på ditt val av applikation. Var och en av klasserna ska innehålla sina
 unika attribut och metoder enligt det vi pratat om.*/
-    protected static long idCounter = 0;
-    protected String id;
     protected boolean inStock;
     protected double dailyRate;
     protected String name;
@@ -13,7 +11,6 @@ unika attribut och metoder enligt det vi pratat om.*/
     protected String description;
 
     public Item(boolean inStock, double dailyRate, String name, String brand, String description) {
-        id = setID();
         this.inStock = inStock;
         this.dailyRate = dailyRate;
         this.name = name;
@@ -22,15 +19,6 @@ unika attribut och metoder enligt det vi pratat om.*/
     }
 
     public Item() {
-    }
-
-    //Skapar nytt ID för varje skapat objekt
-    private static synchronized String setID(){
-        return String.valueOf(idCounter++);
-    }
-
-    public String getId() {
-        return id;
     }
 
     public boolean isInStock() {

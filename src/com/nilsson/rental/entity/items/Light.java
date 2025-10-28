@@ -3,7 +3,7 @@ package com.nilsson.rental.entity.items;
 public class Light extends Item{
     private boolean builtInBattery;
     private boolean cameraMountable;
-    private int maxEffect;
+    private int maxLux;
     private double height;
     private double width;
     private double depth;
@@ -12,12 +12,12 @@ public class Light extends Item{
 
 
     public Light(boolean inStock, double dailyRate, String name, String brand, String description,
-                 boolean builtInBattery, boolean cameraMountable, int maxEffect,
+                 boolean builtInBattery, boolean cameraMountable, int maxLux,
                  double height, double width, double depth) {
         super(inStock, dailyRate, name, brand, description);
         this.builtInBattery = builtInBattery;
         this.cameraMountable = cameraMountable;
-        this.maxEffect = maxEffect;
+        this.maxLux = maxLux;
         this.height = height;
         this.width = width;
         this.depth = depth;
@@ -42,12 +42,12 @@ public class Light extends Item{
         this.cameraMountable = cameraMountable;
     }
 
-    public int getMaxEffect() {
-        return maxEffect;
+    public int getMaxLux() {
+        return maxLux;
     }
 
-    public void setMaxEffect(int maxEffect) {
-        this.maxEffect = maxEffect;
+    public void setMaxLux(int maxLux) {
+        this.maxLux = maxLux;
     }
 
     public double getHeight() {
