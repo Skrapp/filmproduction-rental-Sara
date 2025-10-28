@@ -8,36 +8,51 @@ import java.util.TreeSet;
 
 public class MemberRegistry {
     /*• Inventory och MemberRegistry (hanteras i minnet via List, Map eller Set)*/
-    Set<Member> memberList;
+    Set<Member> memberSet;
+    Comparator<Member> defaultComparator;
 
-    public MemberRegistry(){
-        memberList = new TreeSet<Member>();
+    public MemberRegistry(Comparator<Member> defaultComparator){
+        memberSet = new TreeSet<>(defaultComparator);
     }
 
-    public Set<Member> getMemberList() {
-        return memberList;
+    public Comparator<Member> getDefaultComparator() {
+        return defaultComparator;
     }
 
-    public void setMemberList(Set<Member> memberList) {
-        this.memberList = memberList;
+    public void setDefaultComparator(Comparator<Member> defaultComparator) {
+        this.defaultComparator = defaultComparator;
+    }
+
+    public Set<Member> getMemberSet() {
+        return memberSet;
+    }
+
+    public void setMemberSet(Set<Member> memberSet) {
+        this.memberSet = memberSet;
     }
 
     public void addMember(Member member){
-        memberList.add(member);
+        memberSet.add(member);
     }
 
     public void removeMember(Member member){
-        memberList.remove(member);
+        memberSet.remove(member);
     }
 
-    public void printMemberList(){
-        //Default ordning på lista skrivs ut
-        for(Member member : memberList){
+    //Default ordning på lista skrivs ut
+    public void printMemberSet(){
+        for(Member member : memberSet){
             System.out.println(member);
         }
     }
 
-    public void printMemberList(Comparator<Member> memberComparator){
-        //Beroende på comparator skrivs listan ut
+    //Skapar ny set med annan comparator och skriver ut den
+    public void printMemberSet(Comparator<Member> memberComparator){
+        Set<Member> sortedMemberSet = new TreeSet<>(memberComparator);
+        sortedMemberSet.addAll(memberSet);
+
+        for(Member member : sortedMemberSet){
+            System.out.println(member);
+        }
     }
 }

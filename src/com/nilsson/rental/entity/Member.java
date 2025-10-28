@@ -13,13 +13,13 @@ public class Member implements Comparable<Member>{
     private static long idCounter = 0;
     private final String id;
     private String name;
-    private PricePolicy status;
+    private PricePolicy level;
     private TreeSet<Rental> rentalHistory;
 
-    public Member(String name, PricePolicy status) {
+    public Member(String name, PricePolicy level) {
         this();
         this.name = name;
-        this.status = status;
+        this.level = level;
     }
 
     public Member() {
@@ -43,39 +43,38 @@ public class Member implements Comparable<Member>{
         this.name = name;
     }
 
-    public PricePolicy getStatus() {
-        return status;
+    public PricePolicy getLevel() {
+        return level;
     }
 
-    public void setStatus(PricePolicy status) {
-        this.status = status;
+    public void setLevel(PricePolicy level) {
+        this.level = level;
     }
     
     public void setStatus(String status){
         switch (status.toLowerCase().trim()){
-            case "standard" -> this.status = new Standard();
-            case "premium" -> this.status = new Premium();
-            case "student" -> this.status = new Student();
+            case "standard" -> this.level = new Standard();
+            case "premium" -> this.level = new Premium();
+            case "student" -> this.level = new Student();
             default -> throw new IllegalStateException("Unexpected value: " + status);
         }
-    }
-
-    //Sorterar enligt namn
-    @Override
-    public int compareTo(Member otherMember) {
-        return Integer.parseInt(this.id) - Integer.parseInt(otherMember.id);
     }
 
     @Override
     public String toString() {
         String statusInfo="";
-        if(status.getClass() == Student.class){
+        if(level.getClass() == Student.class){
             statusInfo = "Student";
-        } else if (status.getClass() == Standard.class){
+        } else if (level.getClass() == Standard.class){
             statusInfo = "Standard";
-        } else if(status.getClass() == Premium.class){
+        } else if(level.getClass() == Premium.class){
             statusInfo = "Premium";
         }
         return "id: " + id + "\t| Namn: " + name + "\t| Level: " + statusInfo;
+    }
+
+    @Override
+    public int compareTo(Member otherMember) {
+        return Integer.parseInt(this.id) - Integer.parseInt(otherMember.id);
     }
 }
