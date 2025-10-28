@@ -1,12 +1,10 @@
 package com.nilsson.rental;
 
-import com.nilsson.rental.dao.*;
 import com.nilsson.rental.entity.*;
-import com.nilsson.rental.pricepolicy.*;
+import com.nilsson.rental.entity.pricepolicy.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class Main {
 

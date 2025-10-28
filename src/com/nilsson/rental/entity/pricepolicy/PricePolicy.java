@@ -1,4 +1,4 @@
-package com.nilsson.rental.pricepolicy;
+package com.nilsson.rental.entity.pricepolicy;
 
 public interface PricePolicy {
     /*• PricePolicy (interface) + konkreta strategier, ex. standard, student, premium.*/

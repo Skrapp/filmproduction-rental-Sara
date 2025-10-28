@@ -1,10 +1,10 @@
 package com.nilsson.rental.entity;
 
 import com.nilsson.rental.dao.Rental;
-import com.nilsson.rental.pricepolicy.Premium;
-import com.nilsson.rental.pricepolicy.PricePolicy;
-import com.nilsson.rental.pricepolicy.Standard;
-import com.nilsson.rental.pricepolicy.Student;
+import com.nilsson.rental.entity.pricepolicy.Premium;
+import com.nilsson.rental.entity.pricepolicy.PricePolicy;
+import com.nilsson.rental.entity.pricepolicy.Standard;
+import com.nilsson.rental.entity.pricepolicy.Student;
 
 import java.util.TreeSet;
 

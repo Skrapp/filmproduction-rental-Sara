@@ -3,7 +3,7 @@ package com.nilsson.rental.service;
 import com.nilsson.rental.dao.MemberRegistry;
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
-import com.nilsson.rental.pricepolicy.PricePolicy;
+import com.nilsson.rental.entity.pricepolicy.PricePolicy;
 
 import java.util.Comparator;
 import java.util.Set;

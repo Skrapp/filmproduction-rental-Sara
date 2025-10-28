@@ -3,10 +3,10 @@ package com.nilsson.rental;
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
 import com.nilsson.rental.entity.MemberNameComparator;
-import com.nilsson.rental.pricepolicy.Premium;
-import com.nilsson.rental.pricepolicy.PricePolicy;
-import com.nilsson.rental.pricepolicy.Standard;
-import com.nilsson.rental.pricepolicy.Student;
+import com.nilsson.rental.entity.pricepolicy.Premium;
+import com.nilsson.rental.entity.pricepolicy.PricePolicy;
+import com.nilsson.rental.entity.pricepolicy.Standard;
+import com.nilsson.rental.entity.pricepolicy.Student;
 import com.nilsson.rental.service.MembershipService;
 import com.nilsson.rental.service.RentalService;
 
