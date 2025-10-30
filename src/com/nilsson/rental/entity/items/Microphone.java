@@ -1,6 +1,6 @@
 package com.nilsson.rental.entity.items;
 
-public class Microphone extends Sound {
+public class Microphone extends Item {
     private boolean wireless;
     private String soundOutput;
 
@@ -13,6 +13,11 @@ public class Microphone extends Sound {
 
     public Microphone() {
 
+    }
+
+    @Override
+    public String getCategoryName() {
+        return "Mikrofon";
     }
 
     public boolean isWireless() {

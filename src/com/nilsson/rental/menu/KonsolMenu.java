@@ -1,8 +1,9 @@
-package com.nilsson.rental;
+package com.nilsson.rental.menu;
 
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
 import com.nilsson.rental.entity.MemberNameComparator;
+import com.nilsson.rental.entity.items.Item;
 import com.nilsson.rental.entity.pricepolicy.Premium;
 import com.nilsson.rental.entity.pricepolicy.PricePolicy;
 import com.nilsson.rental.entity.pricepolicy.Standard;
@@ -16,7 +17,9 @@ import java.util.Comparator;
 public class KonsolMenu {
     /*• Konsolmeny: lägg till/sök/ändra medlemmar. Lista/filtrera items. Boka/avsluta
     uthyrning. Summera intäkter*/
-    BufferedReader reader;
+    //TODO separera till olika menu-klasser
+    //TODO Koppla alla händelser som inte behöver beräknad till memberRegistry istället för att gå genom mellanhanden memberService
+    private BufferedReader reader;
     private MembershipService membershipService;
     private RentalService rentalService;
 
@@ -71,9 +74,11 @@ public class KonsolMenu {
             switch (input) {
                 case "1":
                     //Hantera inventeringen av objekt
+                    manageAllItems();
                     break;
                 case "2":
                     //Skapa ett nytt objekt
+                    createNewItem();
                     break;
                 case "3":
                     //Skapa en ny uthyrning
@@ -83,7 +88,7 @@ public class KonsolMenu {
                     break;
                 case "5":
                     //Hantera alla medlemmar
-                    ManageAllMembers();
+                    manageAllMembers();
                     break;
                 case "6":
                     //Skapa ny medlem
@@ -104,8 +109,34 @@ public class KonsolMenu {
         }
     }
 
+    private void manageAllItems() {
+        rentalService.printEntireInventory();
+    }
+
+    private Item createNewItem() {
+        while (true){
+            System.out.println("Vilken kategori tillhör objektet?");
+
+            System.out.println("Skriv namn på objekt: ");
+            String name = null;
+            try {
+                name = reader.readLine().trim();
+
+                if(name.isEmpty()){
+                    System.out.println("Namn kan inte vara tomt. ");
+                    continue;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //TODO Hur skapar jag nya objekt utifrån de attribut som finns i subklasserna?
+            return null;
+        }
+
+    }
+
     //Hantera alla medlemmar, kan välja en medlem att gå in och ändra, kan sortera och filtrera listan
-    private void ManageAllMembers() {
+    private void manageAllMembers() {
         //memberComparator bestämmer hur members ska skrivas ut
         //pricePolicyFilter filtrerar enligt vald PricePolicy klass (PricePolicy.class inkluderas alla medlemmar som har en level)
         Comparator<Member> memberComparator = membershipService.getMemberRegistry().getDefaultComparator();

@@ -15,6 +15,11 @@ public class Light extends Item{
     public Light() {
     }
 
+    @Override
+    public String getCategoryName() {
+        return "Ljus";
+    }
+
     public boolean isWireless() {
         return wireless;
     }

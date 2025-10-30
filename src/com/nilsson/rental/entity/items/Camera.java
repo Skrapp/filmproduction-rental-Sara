@@ -29,4 +29,8 @@ public class Camera extends Item{
     public void setMicrophoneInput(String microphoneInput) {
         this.microphoneInput = microphoneInput;
     }
+
+    public String getCategoryName(){
+        return "Kamera";
+    }
 }

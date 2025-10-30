@@ -10,5 +10,10 @@ public class Sound extends Item{
     public Sound() {
     }
 
+    @Override
+    public String getCategoryName() {
+        return "Ljud";
+    }
+
 
 }

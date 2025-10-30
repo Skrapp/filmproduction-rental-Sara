@@ -1,6 +1,6 @@
 package com.nilsson.rental.entity.items;
 
-public class Headphone extends Sound {
+public class Headphone extends Item {
     private String soundInput;
 
     public Headphone(boolean inStock, double dailyRate, String name, String brand, String description, String soundInput) {
@@ -10,6 +10,11 @@ public class Headphone extends Sound {
 
     public Headphone() {
 
+    }
+
+    @Override
+    public String getCategoryName() {
+        return "Hörlurar";
     }
 
     public String getSoundInput() {

@@ -55,7 +55,7 @@ public class MembershipService {
         member.setStatus(level);
     }
 
-    ///Skapar en stream som filtrerar members enligt om member (m) level-klass är av samma klass som pricepolicyfilter-klassen
+    ///Skapar en stream som filtrerar members enligt om member(m) level-klass är av samma klass som pricepolicyfilter-klassen
     /// samt filtrerar på sökord i namn
     /// och samlar sedan den som en TreeSet som sorteras med memberComparator
     /// Skriver ut alla members

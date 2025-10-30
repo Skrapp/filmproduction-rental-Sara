@@ -11,6 +11,11 @@ public class Memory extends Item {
     public Memory() {
     }
 
+    @Override
+    public String getCategoryName() {
+        return "Minneskort";
+    }
+
     public int getMemorySize() {
         return memorySize;
     }

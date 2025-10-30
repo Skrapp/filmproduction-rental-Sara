@@ -60,4 +60,18 @@ unika attribut och metoder enligt det vi pratat om.*/
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    @Override
+    public String toString() {
+        return
+                "Kategori: " + this.getCategoryName() + '\n' +
+                        name + " - " + brand + '\n' +
+                        "Kostnad/dygn: " + dailyRate + '\n' +
+                        "Mer info: " + description + '\n';
+    }
+
+    public abstract String getCategoryName();
+
+
 }

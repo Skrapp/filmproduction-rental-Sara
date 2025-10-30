@@ -3,6 +3,7 @@ package com.nilsson.rental;
 import com.nilsson.rental.entity.*;
 import com.nilsson.rental.entity.items.*;
 import com.nilsson.rental.entity.pricepolicy.*;
+import com.nilsson.rental.menu.KonsolMenu;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -44,13 +45,13 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "Ulanzi",
                 "Kompakt och portabel resestativ",
                 Camera.class);
-        Accessory tripod2 = new Accessory(true,
+        Accessory tripod2 = new Accessory(false,
                 200,
                 "KH26PC Video Tripod Kit",
                 "Benro",
                 "Stabilt och högt videostativ för video- och systemkamera",
                 Camera.class);
-        Accessory tripod3 = new Accessory(true,
+        Accessory tripod3 = new Accessory(false,
                 200,
                 "KH26PC Video Tripod Kit",
                 "Benro",
@@ -92,12 +93,6 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "Canon",
                 "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
                 true, "XLR");
-        Camera camera2 = new Camera(true,
-                500,
-                "XA70",
-                "Canon",
-                "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
-                true, "XLR");
         Camera camera3 = new Camera(true,
                 400,
                 "Q8n-4K Handy Video Recorder",
@@ -115,29 +110,13 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "LT002 7\" RGB LED Video Light B01002",
                 "Ulanzi",
                 "Kraftfull RGB-lampa med olika ljuseffekter för mobil och kamera",
-                true, true
-        );
+                true, true);
         Light light2 = new Light(true,
                 300,
                 "SL100D LED Kit",
                 "Godox",
                 "Modernt LED-paket för foto och video",
-                false, false
-        );
-        Light light3 = new Light(true,
-                300,
-                "SL100D LED Kit",
-                "Godox",
-                "Modernt LED-paket för foto och video",
-                false, false
-        );
-        Light light4 = new Light(true,
-                300,
-                "SL100D LED Kit",
-                "Godox",
-                "Modernt LED-paket för foto och video",
-                false, false
-        );
+                false, false);
         Memory memory1 = new Memory(true,
                 100,
                 "SDXC Pro 1800X 128GB 280MB/S UHS-II U3 V60",
@@ -151,13 +130,6 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "Liten och kompakt SSD med 2TB lagringsutrymme",
                 2000);
         Microphone microphone1 = new Microphone(true,
-                200,
-                "Mic Mini (2 TX + 1 RX + Charging Case)",
-                "DJI",
-                "Trådlös mikrofon i ultralätt format för professionell ljudinspelning",
-                "3,5mm",
-                true);
-        Microphone microphone2 = new Microphone(true,
                 200,
                 "Mic Mini (2 TX + 1 RX + Charging Case)",
                 "DJI",
@@ -188,12 +160,6 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "Sony",
                 "Komfortabla och funktionella hörlurar för professionellt bruk",
                 "3,5mm");
-        Headphone headphone3 = new Headphone(true,
-                100,
-                "HD 650",
-                "Sennheiser",
-                "Öppna studiohörlurar med mjuk diskant och varm bas",
-                "3,5mm");
 
         KonsolMenu konsolMenu = new KonsolMenu(new BufferedReader(new InputStreamReader(System.in)));
         konsolMenu.getMembershipService().addMember(m1);
@@ -202,6 +168,15 @@ samt att skapa ny och hantera befintliga uthyrningar.
         konsolMenu.getMembershipService().addMember(m4);
         konsolMenu.getMembershipService().addMember(m5);
         konsolMenu.getMembershipService().addMember(m6);
+
+        konsolMenu.getRentalService().addItem(tripod1);
+        konsolMenu.getRentalService().addItem(tripod2);
+        konsolMenu.getRentalService().addItem(tripod3);
+        konsolMenu.getRentalService().addItem(battery1);
+        konsolMenu.getRentalService().addItem(battery2);
+        konsolMenu.getRentalService().addItem(battery3);
+
+        konsolMenu.getRentalService().printEntireInventory();
 
         konsolMenu.mainMenu();
 
