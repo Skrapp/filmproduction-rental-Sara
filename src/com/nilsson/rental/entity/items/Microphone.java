@@ -22,4 +22,12 @@ public class Microphone extends Sound {
     public void setWireless(boolean wireless) {
         this.wireless = wireless;
     }
+
+    public String getSoundOutput() {
+        return soundOutput;
+    }
+
+    public void setSoundOutput(String soundOutput) {
+        this.soundOutput = soundOutput;
+    }
 }

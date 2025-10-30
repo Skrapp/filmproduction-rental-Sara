@@ -91,53 +91,53 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "XA70",
                 "Canon",
                 "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
-                true, false, 4000, "XLR");
+                true, "XLR");
         Camera camera2 = new Camera(true,
                 500,
                 "XA70",
                 "Canon",
                 "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
-                true, false, 4000, "XLR");
+                true, "XLR");
         Camera camera3 = new Camera(true,
                 400,
                 "Q8n-4K Handy Video Recorder",
                 "Zoom",
                 "Allt-i-ett videokamera med 4K-upplösning och stereomikrofon",
-                true, true, 4000, "XLR");
+                true, "XLR");
         Camera camera4 = new Camera(true,
                 500,
                 "Legria HF G70",
                 "Canon",
                 "Handhållen 4K-videokamera med 5-axlig bildstabilisering",
-                true, true, 4000, "3,5mm");
+                true, "3,5mm");
         Light light1 = new Light(true,
                 150,
                 "LT002 7\" RGB LED Video Light B01002",
                 "Ulanzi",
                 "Kraftfull RGB-lampa med olika ljuseffekter för mobil och kamera",
-                true, true, 800,
-                14, 7.8, 1.6);
+                true, true
+        );
         Light light2 = new Light(true,
                 300,
                 "SL100D LED Kit",
                 "Godox",
                 "Modernt LED-paket för foto och video",
-                false, false, 32100,
-                12.7, 20.5, 24.3);
+                false, false
+        );
         Light light3 = new Light(true,
                 300,
                 "SL100D LED Kit",
                 "Godox",
                 "Modernt LED-paket för foto och video",
-                false, false, 32100,
-                12.7, 20.5, 24.3);
+                false, false
+        );
         Light light4 = new Light(true,
                 300,
                 "SL100D LED Kit",
                 "Godox",
                 "Modernt LED-paket för foto och video",
-                false, false, 32100,
-                12.7, 20.5, 24.3);
+                false, false
+        );
         Memory memory1 = new Memory(true,
                 100,
                 "SDXC Pro 1800X 128GB 280MB/S UHS-II U3 V60",

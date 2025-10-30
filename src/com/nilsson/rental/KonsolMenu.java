@@ -180,6 +180,7 @@ public class KonsolMenu {
             }
         }
     }
+    //trim
 
     //Hantera vald medlems data
     private void manageMember(Member memberToManage) {
