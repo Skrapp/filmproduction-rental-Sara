@@ -1,6 +1,8 @@
 package com.nilsson.rental.service;
 
 import com.nilsson.rental.dao.Inventory;
+import com.nilsson.rental.dao.Rental;
+import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.items.Item;
 
 import java.util.List;
@@ -8,13 +10,16 @@ import java.util.List;
 public class RentalService {
     /*• RentalService och MembershipService ska innehålla affärslogiken*/
     private Inventory inventory;
+    private double income;
 
-    public RentalService(Inventory inventory) {
+    public RentalService(Inventory inventory, double income) {
         this.inventory = inventory;
+        this.income = income;
     }
 
     public RentalService() {
         inventory = new Inventory();
+        income = 0;
     }
 
     public Inventory getInventory() {
@@ -23,6 +28,14 @@ public class RentalService {
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    public double getIncome() {
+        return income;
+    }
+
+    public void setIncome(double income) {
+        this.income = income;
     }
 
     public void addItem(Item item){
@@ -37,9 +50,10 @@ public class RentalService {
         inventory.printItems(inventory.getCategory(category));
     }
 
-    /*public void removeItem(Item item){
-        inventory.removeItem(item);
-    }*/
+    public void addRentalToMember(Member member, Rental rental){
+        member.addRental(rental);
+        income += member.getLevel().applyDiscount(rental.getTotalCost());
+    }
 
     public Item getSingleItemByName(String name){
         return inventory.getItemByName(name).getFirst();

@@ -2,23 +2,39 @@ package com.nilsson.rental.dao;
 
 import com.nilsson.rental.entity.items.Item;
 
+import javax.swing.text.DateFormatter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class Rental implements Comparable<Rental>{
     /*• Rental (kopplar member och item för en viss tidsperiod)*/
+    private static long idCounter = 0;
+    private String id;
     private LocalDateTime startDate;
     private LocalDateTime rentUntilDate;
     private boolean returned;
     private Item item;
 
     public Rental() {
+        id = setID();
     }
 
     public Rental(LocalDateTime startDate, LocalDateTime rentUntilDate, Item item) {
+        this();
         this.startDate = startDate;
         this.rentUntilDate = rentUntilDate;
         this.item = item;
         returned = false;
+    }
+
+    //Skapar nytt ID för varje skapat objekt
+    private static synchronized String setID(){
+        return String.valueOf(idCounter++);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public LocalDateTime getStartDate() {
@@ -53,8 +69,23 @@ public class Rental implements Comparable<Rental>{
         this.item = item;
     }
 
+
+    public double getTotalCost(){
+        return item.getDailyRate() * startDate.until(rentUntilDate, ChronoUnit.DAYS);
+    }
+
     @Override
     public int compareTo(Rental otherRental) {
         return this.startDate.compareTo(otherRental.startDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Uthyrning| id: " + id + '\n' +
+                "\tprodukt: " + item.getName() + " - " + item.getBrand() + '\n' +
+                "\tUtlåningsdatum: " + startDate.format(DateTimeFormatter.ISO_DATE_TIME) + '\n' +
+                "\tLämna tillbaka senast: " + rentUntilDate.format(DateTimeFormatter.ISO_DATE_TIME) + '\n' +
+                "\tTotal kostnad: " + getTotalCost() + '\n' +
+                "\treturnerad: " + ((returned) ? "Ja" : "Nej");
     }
 }

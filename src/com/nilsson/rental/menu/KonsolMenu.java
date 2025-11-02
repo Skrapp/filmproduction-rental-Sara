@@ -1,5 +1,6 @@
 package com.nilsson.rental.menu;
 
+import com.nilsson.rental.dao.Rental;
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
 import com.nilsson.rental.entity.MemberNameComparator;
@@ -12,6 +13,7 @@ import com.nilsson.rental.service.MembershipService;
 import com.nilsson.rental.service.RentalService;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -93,7 +95,25 @@ public class KonsolMenu {
     }
 
     /**
-     * Används för menyval. Ser till att det användaren skickar inte är tom och är kompitabel som int och inom angedda gränser, repeterar tills rätt format är inskikckat
+     * Ser till att det användaren skickar inte är tom och är kompitabel som int, repeterar tills rätt format är inskickkat
+     * @param askFromUser vad användaren ska svara på
+     * @return en int som finns i menyn
+     * @throws IOException
+     */
+    public int getInputInt(String askFromUser) throws IOException {
+        while (true){
+            System.out.println(askFromUser + ". Svara med ett heltal.");
+            try {
+                return Integer.parseInt(reader.readLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Skriv ett heltal");
+            }
+
+        }
+    }
+
+    /**
+     * Används för menyval. Ser till att det användaren skickar inte är tom och är kompitabel som int och inom angivna gränser, repeterar tills rätt format är inskikckat
      * @param askFromUser vad användaren ska svara på
      * @param maximum högsta möjliga val
      * @param minimum lägsta möjliga val
@@ -113,7 +133,6 @@ public class KonsolMenu {
             } catch (NumberFormatException e) {
                 System.out.println("Skriv ett heltal");
             }
-
         }
     }
 
@@ -142,66 +161,239 @@ public class KonsolMenu {
      */
     public void mainMenu(){
         while(true) {
-            System.out.println("Välkommen till Wigells filmmagasin.");
+            System.out.println("\nVälkommen till Wigells filmmagasin.");
             System.out.println("""
                     [1] Hantera produkter för uthyrning
                     [2] Lägg till nytt produkter för uthyrning
                     [3] Lägg till ny uthyrning
-                    [4] Hantera befintliga uthyrningar
-                    [5] Hantera medlemsregister
-                    [6] Lägg till ny medlem
-                    [7] Se månadens intäkter
+                    [4] Se befintliga uthyrningar
+                    [5] Avsluta/ändra uthyrning
+                    [6] Hantera medlemsregister
+                    [7] Lägg till ny medlem
+                    [8] Se månadens intäkter
                     [0] Avsluta programmet"""); //Skriver vad som har ändrats under dagen
 
             int input;
             try {
-                input = getInputIntMenu("Välj menyalternativ", 7, 0);
+                input = getInputIntMenu("Välj menyalternativ", 8, 0);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             switch (input) {
-                case 1:
+                case 1 ->{
                     //Hantera inventeringen av objekt
                     printItems();
-                    chooseItemToChange();
-                    break;
-                case 2:
+                    Item itemToChange = chooseItem("ändra");
+                    if(itemToChange == null){
+                        continue;
+                    }
+                    changeItem(itemToChange);
+                }
+                case 2 -> {
                     //Skapa ett nytt objekt
                     Item newItem = createNewItem();
-                    if(newItem != null) {
-                        rentalService.addItem(newItem);
-                        System.out.println("Skapad: " + newItem);
+                    if (newItem == null) {
+                        continue;
                     }
-                    break;
-                case 3:
+                    rentalService.addItem(newItem);
+                    System.out.println("Skapad: " + newItem);
+                }
+                case 3 -> {
                     //Skapa en ny uthyrning
-
-                    break;
-                case 4:
-                    //Hantera alla uthyrningar
-                    break;
-                case 5:
+                    renting();
+                }
+                case 4 -> {
+                    //Skriv ut alla uthyrningar
+                    for(Member member : membershipService.getMemberRegistry().getMemberSet()){
+                        System.out.println(member);
+                        member.printRentalHistory();
+                        System.out.println("----------------------------------------------------------");
+                        System.out.println();
+                    }
+                }
+                case 5 ->{
+                    returnItem();
+                }
+                case 6 -> {
                     //Hantera alla medlemmar
-                    manageAllMembers();
-                    break;
-                case 6:
+                    Member memberToManage = chooseMember("hantera");
+                    manageMember(memberToManage);
+                }
+                case 7 -> {
                     //Skapa ny medlem
                     Member member = createNewMember();
                     //TODO felhantering om det är felaktig info
                     membershipService.addMember(member);
-                    break;
-                case 7:
-                    //Se månadens intäkter
-                    break;
-                case 0:
+                }
+                case 8 ->{
+                //Se alla intäkter under dagen
+                    System.out.println("Inkomst från medlemskap: " + membershipService.getIncome());
+                    System.out.println("Inkomst från hyror: " + rentalService.getIncome());
+                    double totalIncome = rentalService.getIncome() + membershipService.getIncome();
+                    System.out.println("Total inkomst: " + totalIncome);
+                }
+                case 0->{
                     System.out.println("Tack för idag!");
                     System.exit(1);
-                    break;
-                default:
-                    System.out.println("Välj en giltig siffra från menyn.");
+                }
+                default-> System.out.println("Välj en giltig siffra från menyn.");
             }
         }
     }
+
+    /**
+     * Huvudmetod för att lämna tillbaka
+     */
+    private void returnItem() {
+        Member rentingMember = chooseMember("lämna tillbaka produkt");
+        if(rentingMember == null){
+            return;
+        }
+        if(rentingMember.getRentalHistory().isEmpty()){
+            System.out.println(rentingMember.getName() + " har inga tidigare uthyrningar.");
+        }
+
+        Rental rental = chooseRental(rentingMember);
+        if(rental == null){
+            return;
+        }
+        changeRental(rental);
+    }
+
+    /**
+     * Användaren kan välja att avsluta en uthyrning
+     * @param rental uthyrningen som ska avslutas
+     */
+    private void changeRental(Rental rental) {
+        System.out.println(rental);
+        System.out.println("För att avsluta uthyrningen skriv \"avsluta\" följt av 'enter'.\n" +
+                "För att gå tillbaka tryck endast 'enter'.");
+
+        try {
+            String input = reader.readLine().trim();
+
+            if(input.isEmpty()){
+                return;
+            }
+
+            if(input.equalsIgnoreCase("avsluta") ){
+                if(!rental.isReturned()) {
+                    rental.setReturned(true);
+                    System.out.println(rental.getItem().getName() + " har blivit återlämnad.");
+                } else {
+                    System.out.println("Produkten är redan återlämnad.");
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Användaren väljer en av medlemmens uthyrningar
+     * @param rentingMember medlem som har uthyrningar
+     * @return
+     */
+    private Rental chooseRental(Member rentingMember) {
+        rentingMember.printRentalHistory();
+
+        System.out.println("För att hantera en uthyrning skriv dess id följt av 'enter'.\n" +
+                "För att gå tillbaka tryck endast 'enter'.");
+        try {
+            String input = reader.readLine().trim();
+
+            if(input.isEmpty()){
+                return null;
+            }
+            for (Rental rental : rentingMember.getRentalHistory()){
+                if(rental.getId().equals(input)){
+                    return rental;
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
+     * Huvudmetod för att hyra
+     */
+    public void renting() {
+        Member rentingMember = chooseMember("välja medlem som ska hyra");
+        if(rentingMember == null){
+            return;
+        }
+        printItems();
+        Item item = chooseItem("hyra");
+        if(item == null){
+            return;
+        }
+        Item itemToRent = getItemInStock(item.getName());
+        if(itemToRent == null){
+            System.out.println(item.getName() + " finns inte inne.");
+            return;
+        }
+        Rental newRental = createRental(itemToRent, rentingMember);
+        itemToRent.setInStock(addRentalToMember(newRental, rentingMember));
+    }
+
+    /**
+     * Om produkten finns inne hämtas Item, annars null
+     * @param name söker efter Item enligt namn
+     * @return Om produkten finns inne hämtas Item, annars null
+     */
+    private Item getItemInStock(String name) {
+        List<Item> items = rentalService.getAllItemsByName(name);
+        for (Item item : items){
+            if(item.isInStock()){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Användaren får godkänna om uthyrningen ser bra ut, svarar användare ja skickas rental till member
+     * @param newRental Uthyrningen som det är frågan om
+     * @param rentingMember Medlemmen som kommer hyra produkten
+     * @return Returnerar true om uthyrningen genomförts, annars false
+     */
+    private boolean addRentalToMember(Rental newRental, Member rentingMember) {
+        System.out.println(newRental);
+        System.out.println("Kostnad för medlem: " + rentingMember.getLevel().applyDiscount(newRental.getTotalCost()));
+        System.out.println("Medlem som ska hyra: " + rentingMember);
+        try {
+            if(getInputYesOrNo("Godkänns transaktion")) {
+                rentalService.addRentalToMember(rentingMember, newRental);
+                System.out.println("Uthyrning genomförd");
+                return true;
+            } else {
+                System.out.println("Ingen uthyrning genomförd");
+                return false;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Skapar en rental utifrån användarens input
+     * @param itemToRent Vad som ska hyras ut
+     * @param rentingMember Vem som ska hyra
+     * @return
+     */
+    private Rental createRental(Item itemToRent, Member rentingMember) {
+        try {
+            int days = getInputInt("Antal dagar");
+            return new Rental(LocalDateTime.now(), LocalDateTime.now().plusDays(days), itemToRent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Användare väljer kategori, kategorin skrivs ut
@@ -247,20 +439,19 @@ public class KonsolMenu {
     }
 
     /**
-     * Användaren väljer utifrån namn ett objekt att ändra.
+     * Användaren väljer utifrån namn en produkt.
      * TODO bör använda annat än namn ifall två produkter heter samma sak
      */
-    private void chooseItemToChange() {
+    private Item chooseItem(String whatToDoWithItem) {
         while (true) {
-            System.out.println("""
-                    Skriv in namnet på produkten du vill ändra på följt av 'enter'.
-                    Om du vill gå tillbaka tryck endast 'enter'.""");
+            System.out.println("Skriv in namnet på produkten du vill " + whatToDoWithItem + " följt av 'enter'." +
+                    "Om du vill gå tillbaka tryck endast 'enter'.");
 
             try {
                 String name = reader.readLine().trim();
 
                 if (name.isEmpty()) {
-                    return;
+                    return null;
                 }
 
                 Item itemToManage = rentalService.getSingleItemByName(name);
@@ -269,7 +460,7 @@ public class KonsolMenu {
                     continue;
                 }
 
-                changeItem(itemToManage);
+                return itemToManage;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -788,7 +979,7 @@ public class KonsolMenu {
     /**
      * Hantera alla medlemmar, kan välja en medlem att gå in och ändra, kan sortera och filtrera listan
      */
-    private void manageAllMembers() {
+    private Member chooseMember(String whatToDoWithMember) {
         //memberComparator bestämmer hur members ska skrivas ut
         //pricePolicyFilter filtrerar enligt vald PricePolicy klass (PricePolicy.class inkluderas alla medlemmar som har en level)
         Comparator<Member> memberComparator = membershipService.getMemberRegistry().getDefaultComparator();
@@ -800,8 +991,8 @@ public class KonsolMenu {
             membershipService.printMembers(memberComparator, pricePolicyFilter, searchName);
 
             //Ska kunna filtrera enligt level och sortera enligt namn, och id
+            System.out.println("För att " + whatToDoWithMember + " en medlem skriv dess id följt av 'enter'.");
             System.out.println("""
-                    För att hantera en medlem skriv dess id följt av 'enter'.
                     
                     För att söka enligt namn skriv "s:" följt av det du vill söka efter sedan 'enter'
                     För  att sortera skriv "o:" följt av "namn" eller "id" sedan 'enter'.
@@ -819,20 +1010,20 @@ public class KonsolMenu {
 
             //Om användaren endast trycker enter
             if (input.isEmpty()) {
-                break;
+                return null;
             }
 
             if (Character.isDigit(input.charAt(0))){
                 try {
                     Member memberToManage = membershipService.findMemberById(input);
-                    manageMember(memberToManage);
-                    break;
+                    return memberToManage;
                 } catch (NullPointerException e) {
                     System.out.println(e.getMessage());
                     continue;
                 }
             }
 
+            //Sortering och filtrering
             if(input.contains("s:")){
                 searchName = getSectionFor(input, "s:");
                 System.out.println("Filtrerar enligt " + searchName);
@@ -863,7 +1054,6 @@ public class KonsolMenu {
             }
         }
     }
-    //trim
 
     //Hantera vald medlems data
     private void manageMember(Member memberToManage) {
@@ -900,7 +1090,6 @@ public class KonsolMenu {
                 //separerar
                 String newName = input.substring(input.indexOf("n:") + 2);
 
-                //String newName = getSectionAfter(input, "n:");
                 changeMemberName(memberToManage, newName);
             }
             else if(input.toLowerCase().startsWith("l:")) {
@@ -911,8 +1100,9 @@ public class KonsolMenu {
     }
 
 
-
-    //Tar bort medlem från medlemsregister
+    /**
+     * Tar bort medlem från medlemsregister
+     */
     private void removeMember(Member memberToManage) {
         System.out.println("Vill du verkligen ta bort " + memberToManage.getId() +": "+ memberToManage.getName() + " och all dess historik? " +
                 "Svara med \"ja\" eller \"nej\" följt av 'enter'.");
@@ -935,16 +1125,14 @@ public class KonsolMenu {
     //Ändrar medlemmens level
     private void changeMemberLevel(Member memberToManage, String level) {
         if(level.equals("standard")| level.equals("premium")| level.equals("student")){
-            System.out.println("Vill du ändra level från " + memberToManage.getLevel() + " till " + level + "? " +
-                    "Svara med \"ja\" eller \"nej\" följt av 'enter'.");
 
             try {
-                String input = reader.readLine().trim().toLowerCase();
+                boolean input = getInputYesOrNo("Vill du ändra level från " + memberToManage.getLevel() + " till " + level);
 
-                if (input.equals("ja")) {
+                if (input) {
                     membershipService.changeMemberLevel(memberToManage, level);
                     System.out.println("Level ändrat till " + level + ".");
-                } else if (input.equals("nej")) {
+                } else {
                     System.out.println("Level ej ändrat.");
                 }
             } catch (IOException e) {
@@ -957,15 +1145,12 @@ public class KonsolMenu {
 
     //Ändrar medlemmens namn
     private void changeMemberName(Member memberToManage, String newName) {
-        System.out.println("Vill du ändra namnet från " + memberToManage.getName() + " till " + newName + "? " +
-                "Svara med \"ja\" eller \"nej\" följt av 'enter'.");
+               try {
+            boolean input = getInputYesOrNo("Vill du ändra namnet från " + memberToManage.getName() + " till " + newName);
 
-        try {
-            String input = reader.readLine().trim().toLowerCase();
-
-            if (input.equals("ja")) {
+            if (input) {
                 membershipService.changeMemberName(memberToManage, newName);
-            } else if (input.equals("nej")) {
+            } else {
                 System.out.println("Namn ej ändrat.");
             }
         } catch (IOException e) {
@@ -975,24 +1160,19 @@ public class KonsolMenu {
 
     //Skapa en ny medlem till registret
     public Member createNewMember(){
-        System.out.println("Skriv namn");
         String name;
         try {
-            name = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("Vilken level har medlemmen?");
-        PricePolicy pricePolicy =null;
-        boolean choosing = true;
-        do {
-            System.out.println("""
-                    [1] Standard
-                    [2] Premium
-                    [3] Student""");
-            try {
-                int input = Integer.parseInt(reader.readLine());
+            name = getInputNotEmpty("Namn");
+            
+            System.out.println("Vilken level har medlemmen?");
+            PricePolicy pricePolicy =null;
+            boolean choosing = true;
+            do {
+                System.out.println("""
+                        [1] Standard
+                        [2] Premium
+                        [3] Student""");
+                int input = getInputIntMenu("Vilken level har medlemmen", 3, 1);
                 switch (input) {
                     case 1:
                         pricePolicy = new Standard();
@@ -1009,14 +1189,12 @@ public class KonsolMenu {
                     default:
                         System.out.println("Ange ett giltigt värde.");
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (NumberFormatException e){
-                System.out.println("Ange en siffra.");
-            }
-        } while (choosing);
+            } while (choosing);
 
-        return new Member(name, pricePolicy);
+            return new Member(name, pricePolicy);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //Separerar strängen så att endast det svar som gäller given prefix skickas tillbaka
