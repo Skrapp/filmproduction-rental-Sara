@@ -68,10 +68,11 @@ unika attribut och metoder enligt det vi pratat om.*/
                 "Kategori: " + this.getCategoryName() + '\n' +
                         name + " - " + brand + '\n' +
                         "Kostnad/dygn: " + dailyRate + '\n' +
-                        "Mer info: " + description + '\n';
+                        "Mer info: " + description;
     }
 
     public abstract String getCategoryName();
+
 
 
 }

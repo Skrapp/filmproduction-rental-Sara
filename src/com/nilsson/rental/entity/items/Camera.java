@@ -30,6 +30,13 @@ public class Camera extends Item{
         this.microphoneInput = microphoneInput;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "Autofocus: " + ((autoFocus) ? "Ja" : "Nej") + "\n" +
+                "Mikrofoninput: " + microphoneInput;
+    }
+
     public String getCategoryName(){
         return "Kamera";
     }

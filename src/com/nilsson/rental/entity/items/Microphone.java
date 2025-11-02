@@ -35,4 +35,11 @@ public class Microphone extends Item {
     public void setSoundOutput(String soundOutput) {
         this.soundOutput = soundOutput;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "Trådlös: " + ((wireless) ? "Ja":"Nej") + "\n" +
+                "Ljudutgång: " + soundOutput;
+    }
 }

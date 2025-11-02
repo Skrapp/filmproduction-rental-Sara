@@ -6,27 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory2 {
-    private List<Item> items;
-
-    public Inventory2(List<Item> items) {
-        this.items = items;
-    }
+    private List<Accessory> accessories;
+    private List<Camera> cameras;
+    private List<Light> lights;
+    private List<Microphone> microphones;
 
     public Inventory2() {
-        items = new ArrayList<>();
+        accessories = new ArrayList<>();
+        cameras = new ArrayList<>();
+        lights = new ArrayList<>();
+        microphones = new ArrayList<>();
     }
 
-    public List<Item> getItems() {
-        return items;
+    public Inventory2(List<Accessory> accessories, List<Camera> cameras, List<Light> lights, List<Microphone> microphones) {
+        this.accessories = accessories;
+        this.cameras = cameras;
+        this.lights = lights;
+        this.microphones = microphones;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
 
-    public void addItem(Item item){
-        items.add(item);
-    }
 
     //TODO sortera enligt brand
 }

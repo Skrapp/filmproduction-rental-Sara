@@ -1,5 +1,7 @@
 package com.nilsson.rental.entity.items;
 
+import java.util.Objects;
+
 public class Light extends Item{
     private boolean wireless;
     private boolean cameraMountable;
@@ -36,4 +38,10 @@ public class Light extends Item{
         this.cameraMountable = cameraMountable;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "Trådlös: " + ((wireless) ? "Ja":"Nej") +
+                ((cameraMountable) ? "\nGår att fästa på kamera" : "");
+    }
 }

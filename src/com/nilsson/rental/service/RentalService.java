@@ -1,7 +1,6 @@
 package com.nilsson.rental.service;
 
 import com.nilsson.rental.dao.Inventory;
-import com.nilsson.rental.entity.items.Accessory;
 import com.nilsson.rental.entity.items.Item;
 
 public class RentalService {
@@ -29,7 +28,11 @@ public class RentalService {
     }
 
     public void printEntireInventory(){
-        inventory.printSortedItems(inventory.getItems());
+        inventory.printItems(inventory.getEntireInventory());
+    }
+
+    public void printCategory(Class<? extends Item> category){
+        inventory.printItems(inventory.getFilteredListGeneral(inventory.getCategory(category), "Canon"));
     }
 
     /*public void removeItem(Item item){
