@@ -3,6 +3,8 @@ package com.nilsson.rental.service;
 import com.nilsson.rental.dao.Inventory;
 import com.nilsson.rental.entity.items.Item;
 
+import java.util.List;
+
 public class RentalService {
     /*• RentalService och MembershipService ska innehålla affärslogiken*/
     private Inventory inventory;
@@ -32,12 +34,19 @@ public class RentalService {
     }
 
     public void printCategory(Class<? extends Item> category){
-        inventory.printItems(inventory.getFilteredListGeneral(inventory.getCategory(category), "Canon"));
+        inventory.printItems(inventory.getCategory(category));
     }
 
     /*public void removeItem(Item item){
         inventory.removeItem(item);
     }*/
 
+    public Item getSingleItemByName(String name){
+        return inventory.getItemByName(name).getFirst();
+    }
+
+    public List<Item> getAllItemsByName(String name){
+        return inventory.getItemByName(name);
+    }
 
 }

@@ -11,8 +11,50 @@ public class Rental implements Comparable<Rental>{
     private boolean returned;
     private Item item;
 
+    public Rental() {
+    }
+
+    public Rental(LocalDateTime startDate, LocalDateTime rentUntilDate, Item item) {
+        this.startDate = startDate;
+        this.rentUntilDate = rentUntilDate;
+        this.item = item;
+        returned = false;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getRentUntilDate() {
+        return rentUntilDate;
+    }
+
+    public void setRentUntilDate(LocalDateTime rentUntilDate) {
+        this.rentUntilDate = rentUntilDate;
+    }
+
+    public boolean isReturned() {
+        return returned;
+    }
+
+    public void setReturned(boolean returned) {
+        this.returned = returned;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
     @Override
     public int compareTo(Rental otherRental) {
-        return 0;
+        return this.startDate.compareTo(otherRental.startDate);
     }
 }

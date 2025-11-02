@@ -3,7 +3,7 @@ package com.nilsson.rental.menu;
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
 import com.nilsson.rental.entity.MemberNameComparator;
-import com.nilsson.rental.entity.items.Item;
+import com.nilsson.rental.entity.items.*;
 import com.nilsson.rental.entity.pricepolicy.Premium;
 import com.nilsson.rental.entity.pricepolicy.PricePolicy;
 import com.nilsson.rental.entity.pricepolicy.Standard;
@@ -13,6 +13,7 @@ import com.nilsson.rental.service.RentalService;
 
 import java.io.*;
 import java.util.Comparator;
+import java.util.List;
 
 public class KonsolMenu {
     /*• Konsolmeny: lägg till/sök/ändra medlemmar. Lista/filtrera items. Boka/avsluta
@@ -51,55 +52,148 @@ public class KonsolMenu {
         this.rentalService = rentalService;
     }
 
-    //Huvudmenyn för program
+
+    /**
+     * Ser till att det användaren skickar inte är tom, repeterar tills rätt format är inskikckat
+     * @param askFromUser vad användaren ska svara på
+     * @return en sträng med användarens svar
+     * @throws IOException
+     */
+    public String getInputNotEmpty(String askFromUser) throws IOException{
+        while (true) {
+            System.out.println(askFromUser + ":");
+            String input = reader.readLine().trim();
+            if (input.isEmpty()) {
+                System.out.println(askFromUser + " kan inte vara tom.");
+                continue;
+            }
+            return input;
+        }
+    }
+
+    /**
+     * Ser till att det användaren skickar inte är tom och är kompitabel som double, repeterar tills rätt format är inskikckat
+     * @param askFromUser vad användaren ska svara på
+     * @return en double av användarens svar
+     * @throws IOException
+     */
+    public double getInputDouble(String askFromUser) throws IOException{
+        while (true) {
+            String input = getInputNotEmpty(askFromUser);
+            double inputAsDouble = 0;
+            try {
+                inputAsDouble = Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Ange ett tal");
+                continue;
+            }
+
+            return inputAsDouble;
+        }
+    }
+
+    /**
+     * Används för menyval. Ser till att det användaren skickar inte är tom och är kompitabel som int och inom angedda gränser, repeterar tills rätt format är inskikckat
+     * @param askFromUser vad användaren ska svara på
+     * @param maximum högsta möjliga val
+     * @param minimum lägsta möjliga val
+     * @return en int som finns i menyn
+     * @throws IOException
+     */
+    public int getInputIntMenu(String askFromUser, int maximum, int minimum) throws IOException {
+        while (true){
+            System.out.println(askFromUser + ". Svara med tal från menyn.");
+            try {
+                int input = Integer.parseInt(reader.readLine().trim());
+                if (input <= maximum || input >= minimum){
+                    return input;
+                }else {
+                    System.out.println("Skriv ett av talen från menyn.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Skriv ett heltal");
+            }
+
+        }
+    }
+
+    /**
+     * Ser till att det användaren skickar in antingen är ja eller nej och returnerar boolean.
+     * @param askFromUser vad användaren ska svara på
+     * @return true om användare skriver ja, false om användaren skriver nej
+     * @throws IOException
+     */
+    public boolean getInputYesOrNo(String askFromUser) throws IOException{
+        while (true) {
+            System.out.println(askFromUser + "? Svara med 'Ja' eller 'nej'.");
+            String input = reader.readLine().trim();
+            if (input.equalsIgnoreCase("ja")) {
+                return true;
+            }else if(input.equalsIgnoreCase("nej")){
+                return false;
+            } else {
+                System.out.println("Svara med antingen 'Ja' eller 'Nej'.");
+            }
+        }
+    }
+
+    /**
+     * Huvudmeny, användare väljer ett menyval som leder vidare
+     */
     public void mainMenu(){
         while(true) {
-            System.out.println("Välkommen till Wigells filmmagasin. Välj ett alternativ i menyn nedan.");
+            System.out.println("Välkommen till Wigells filmmagasin.");
             System.out.println("""
-                    [1] Hantera objekt för uthyrning
-                    [2] Lägg till nytt objekt för uthyrning
+                    [1] Hantera produkter för uthyrning
+                    [2] Lägg till nytt produkter för uthyrning
                     [3] Lägg till ny uthyrning
                     [4] Hantera befintliga uthyrningar
                     [5] Hantera medlemsregister
                     [6] Lägg till ny medlem
                     [7] Se månadens intäkter
-                    [8] Avsluta programmet"""); //Skriver vad som har ändrats under dagen
+                    [0] Avsluta programmet"""); //Skriver vad som har ändrats under dagen
 
-            String input;
+            int input;
             try {
-                input = reader.readLine();
+                input = getInputIntMenu("Välj menyalternativ", 7, 0);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             switch (input) {
-                case "1":
+                case 1:
                     //Hantera inventeringen av objekt
-                    manageAllItems();
+                    printItems();
+                    chooseItemToChange();
                     break;
-                case "2":
+                case 2:
                     //Skapa ett nytt objekt
-                    createNewItem();
+                    Item newItem = createNewItem();
+                    if(newItem != null) {
+                        rentalService.addItem(newItem);
+                        System.out.println("Skapad: " + newItem);
+                    }
                     break;
-                case "3":
+                case 3:
                     //Skapa en ny uthyrning
+
                     break;
-                case "4":
+                case 4:
                     //Hantera alla uthyrningar
                     break;
-                case "5":
+                case 5:
                     //Hantera alla medlemmar
                     manageAllMembers();
                     break;
-                case "6":
+                case 6:
                     //Skapa ny medlem
                     Member member = createNewMember();
                     //TODO felhantering om det är felaktig info
                     membershipService.addMember(member);
                     break;
-                case "7":
+                case 7:
                     //Se månadens intäkter
                     break;
-                case "8":
+                case 0:
                     System.out.println("Tack för idag!");
                     System.exit(1);
                     break;
@@ -109,33 +203,591 @@ public class KonsolMenu {
         }
     }
 
-    private void manageAllItems() {
-        rentalService.printEntireInventory();
-    }
-
-    private Item createNewItem() {
-        while (true){
-            System.out.println("Vilken kategori tillhör objektet?");
-
-            System.out.println("Skriv namn på objekt: ");
-            String name = null;
+    /**
+     * Användare väljer kategori, kategorin skrivs ut
+     */
+    private void printItems() {
+        System.out.println("""
+                [1] Alla produkter
+                [2] Kameror
+                [3] Ljus
+                [4] Mikrofoner
+                [5] Accessoarer
+                [0] Tillbaka""");
+        boolean choosing = true;
+        do{
             try {
-                name = reader.readLine().trim();
-
-                if(name.isEmpty()){
-                    System.out.println("Namn kan inte vara tomt. ");
-                    continue;
+                int input = getInputIntMenu("Välj kategori", 5, 0);
+                switch (input) {
+                    case 1: rentalService.printEntireInventory();
+                        choosing = false;
+                    break;
+                    case 2: rentalService.printCategory(Camera.class);
+                        choosing = false;
+                    break;
+                    case 3: rentalService.printCategory(Light.class);
+                        choosing = false;
+                    break;
+                    case 4: rentalService.printCategory(Microphone.class);
+                        choosing = false;
+                    break;
+                    case 5: rentalService.printCategory(Accessory.class);
+                        choosing = false;
+                    break;
+                    case 0: choosing = false;
+                    break;
+                    default:
+                        System.out.println("Skriv in ett giltigt alternativ");
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            //TODO Hur skapar jag nya objekt utifrån de attribut som finns i subklasserna?
-            return null;
+        } while (choosing);
+
+    }
+
+    /**
+     * Användaren väljer utifrån namn ett objekt att ändra.
+     * TODO bör använda annat än namn ifall två produkter heter samma sak
+     */
+    private void chooseItemToChange() {
+        while (true) {
+            System.out.println("""
+                    Skriv in namnet på produkten du vill ändra på följt av 'enter'.
+                    Om du vill gå tillbaka tryck endast 'enter'.""");
+
+            try {
+                String name = reader.readLine().trim();
+
+                if (name.isEmpty()) {
+                    return;
+                }
+
+                Item itemToManage = rentalService.getSingleItemByName(name);
+                if (itemToManage == null) {
+                    System.out.println("Det finns ingen produkt med namnet " + name);
+                    continue;
+                }
+
+                changeItem(itemToManage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Användare väljer genom kommandon hur produkten ska ändras.
+     * @param itemToManage Vald produkt som ska ändras
+     */
+    private void changeItem(Item itemToManage) {
+        while (true) {
+            System.out.println(itemToManage);
+            printChangeItemMenu(itemToManage);
+
+            try {
+                String input = reader.readLine().trim();
+
+                if (input.isEmpty()) {
+                    return;
+                }
+
+                if(!input.contains(":") || input.length() < 3){
+                    System.out.println("Felande kommando. T.ex. skriv \"n:Hero 4\" för att ändra namnet till Hero 4.");
+                    continue;
+                }
+
+                String command = input.substring(0, 2);
+                String newChange = input.substring(2);
+
+                if (!makeChangesToItem(itemToManage, command, newChange)){
+                    System.out.println("Felande kommando. T.ex. skriv \"n:Hero 4\" för att ändra namnet till Hero 4.");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Skriver ut hur man skriver kommandon för att ändra produkten.
+     * Beroende på vad det är för typ av kategori finns olika kommandon
+     * @param itemToChange Vald produkt som ska ändras
+     */
+    private void printChangeItemMenu(Item itemToChange){
+        StringBuilder menu = new StringBuilder();
+        menu.append("\nFör att ändra namn skriv \"n:\" följt av det nya namnet.\n");
+        menu.append("För att ändra märke skriv \"m:\" följt av det nya märket.");
+        menu.append("För att ändra beskrivning skriv \"b:\" följt av den nya beskrivningen.\n");
+        menu.append("För att ändra kostnad/dygn skriv \"k:\" följt av nytt pris.\n");
+
+        switch(itemToChange) {
+            case Accessory _ -> {
+                menu.append("För att ändra vad det är för accessoar till skriv \"a:\" följt av \"Kamera\", \"Ljus\" eller \"Mikrofon\".\n");
+            }
+            case Camera _ -> {
+                menu.append("För att ändra om produkten har autofokus skriv \"a:\" följt av \"ja\" eller \"nej\".\n");
+                menu.append("För att ändra ljudingång skriv \"l:\" följt av typ av ljudingång.\n");
+            }
+            case Light _ -> {
+                menu.append("För att ändra om produkten har inbyggt batteri skriv \"i:\" följt av \"ja\" eller \"nej\".\n");
+                menu.append("För att ändra om produkten kan fästas på kamera skriv \"f:\" följt av \"ja\" eller \"nej\".\n");
+            }
+            case Microphone _ -> {
+                menu.append("För att ändra om produkten är trådlös skriv \"t:\" följt av \"ja\" eller \"nej\".\n");
+                menu.append("För att ändra ljudutgång skriv \"l:\" följt av ny typ av ljudutgång.\n");
+            }
+            default -> {
+                System.out.println("Klassen finns inte, kontakta support!\n" +
+                        "Klicka enter för att gå vidare");
+                return;
+            }
+        }
+
+        menu.append("Avsluta kommandot med 'enter'.\n");
+        menu.append("Om du vill gå tillbaka tryck endast 'enter'.\n");
+
+        System.out.println(menu);
+    }
+
+    /**
+     * Tolkar användarens kommando och skickar vidare till respektive metod där ändringen sker.
+     * Beroende på kategori finns fler cases.
+     * @param itemToManage Vald produkt som ska ändras
+     * @param command det användaren skriver in som ska ändra (så som n: eller l:)
+     * @param newChange den nya ändringen
+     * @return om objekten förändrades på korrekt sätt returneras true, annars false
+     */
+    private boolean makeChangesToItem(Item itemToManage, String command, String newChange) {
+        switch (command) {
+            case "n:" -> {
+                return changeItemName(itemToManage, newChange);
+            }
+            case "m:" -> {
+                return changeItemBrand(itemToManage, newChange);
+            }
+            case "b:" -> {
+                return changeItemDescription(itemToManage, newChange);
+            }
+            case "k:"-> {
+                return changeItemDailyRate(itemToManage, newChange);
+            }
+        }
+        switch (itemToManage){
+            case Accessory a -> {
+                return makeChangesToAccessory(a, command, newChange);
+            }
+            case Camera c -> {
+                return makeChangesToCamera(c, command, newChange);
+            }
+            case Light l -> {
+                return makeChangesToLight(l, command, newChange);
+            }
+            case Microphone m -> {
+                return makeChangesToMicrophone(m, command, newChange);
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Tolkar användarens kommando och skickar vidare till respektive metod där ändringen sker.
+     * @param itemToManage Vald produkt som ska ändras
+     * @param command det användaren skriver in som ska ändra (så som n: eller l:)
+     * @param newChange den nya ändringen
+     * @return om objekten förändrades på korrekt sätt returneras true, annars false
+     */
+    private boolean makeChangesToMicrophone(Microphone itemToManage, String command, String newChange) {
+        switch (command){
+            case "t:" ->{
+                return changeMicrophoneWireless(itemToManage, newChange);
+            }
+            case "l:"->{
+                return changeMicrophoneSoundOutput(itemToManage, newChange);
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Tolkar användarens kommando och skickar vidare till respektive metod där ändringen sker.
+     * @param itemToManage Vald produkt som ska ändras
+     * @param command det användaren skriver in som ska ändra (så som n: eller l:)
+     * @param newChange den nya ändringen
+     * @return om objekten förändrades på korrekt sätt returneras true, annars false
+     */
+    private boolean makeChangesToLight(Light itemToManage, String command, String newChange) {
+        switch (command){
+            case "i:" ->{
+                return changeLightBuiltInBattery(itemToManage, newChange);
+            }
+            case "f:"->{
+                return changeLightCameraMountable(itemToManage, newChange);
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Tolkar användarens kommando och skickar vidare till respektive metod där ändringen sker.
+     * @param itemToManage Vald produkt som ska ändras
+     * @param command det användaren skriver in som ska ändra (så som n: eller l:)
+     * @param newChange den nya ändringen
+     * @return om objekten förändrades på korrekt sätt returneras true, annars false
+     */
+    private boolean makeChangesToCamera(Camera itemToManage, String command, String newChange) {
+        switch (command){
+            case "a:" ->{
+                return changeCameraAutoFocus(itemToManage, newChange);
+            }
+            case "l:"->{
+                return changeCameraSoundInput(itemToManage, newChange);
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Tolkar användarens kommando och skickar vidare till respektive metod där ändringen sker.
+     * @param itemToManage Vald produkt som ska ändras
+     * @param command det användaren skriver in som ska ändra (så som n: eller l:)
+     * @param newChange den nya ändringen
+     * @return om objekten förändrades på korrekt sätt returneras true, annars false
+     */
+    private boolean makeChangesToAccessory(Accessory itemToManage, String command, String newChange) {
+        switch (command){
+            case "a:" -> {
+                return changeAccessoryFor(itemToManage, newChange);
+
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    private boolean changeMicrophoneWireless(Microphone itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        if(newChange.equalsIgnoreCase("ja")){
+            for(Item item : itemsWithName) {
+                Microphone microphone = (Microphone) item;
+                microphone.setWireless(true);
+            }
+        }else if(newChange.equalsIgnoreCase("nej")){
+            for(Item item : itemsWithName){
+                Microphone microphone = (Microphone) item;
+                microphone.setWireless(false);
+            }
+        }else {
+            return false;
+        }
+
+        System.out.println("Ändrar trådlös.");
+        return true;
+    }
+
+    private boolean changeMicrophoneSoundOutput(Microphone itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        for(Item item : itemsWithName) {
+            Microphone microphone = (Microphone) item;
+            microphone.setSoundOutput(newChange);
+        }
+        System.out.println("Ändrar ljudutgång.");
+        return true;
+    }
+
+    private boolean changeLightBuiltInBattery(Light itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        if(newChange.equalsIgnoreCase("ja")){
+            for(Item item : itemsWithName) {
+                Light light = (Light) item;
+                light.setBuiltInBattery(true);
+            }
+        }else if(newChange.equalsIgnoreCase("nej")){
+            for(Item item : itemsWithName){
+                Light light = (Light) item;
+                light.setBuiltInBattery(false);
+            }
+        }else {
+            return false;
+        }
+
+        System.out.println("Ändrar inbyggt batteri.");
+        return true;
+    }
+
+    private boolean changeLightCameraMountable(Light itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        if(newChange.equalsIgnoreCase("ja")){
+            for(Item item : itemsWithName) {
+                Light light = (Light) item;
+                light.setCameraMountable(true);
+            }
+        }else if(newChange.equalsIgnoreCase("nej")){
+            for(Item item : itemsWithName){
+                Light light = (Light) item;
+                light.setCameraMountable(false);
+            }
+        }else {
+            return false;
+        }
+
+        System.out.println("Ändrar kamerafästning.");
+        return true;
+    }
+
+    private boolean changeCameraAutoFocus(Camera itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        if(newChange.equalsIgnoreCase("ja")){
+            for(Item item : itemsWithName) {
+                Camera camera = (Camera) item;
+                camera.setAutoFocus(true);
+            }
+        }else if(newChange.equalsIgnoreCase("nej")){
+            for(Item item : itemsWithName){
+                Camera camera = (Camera) item;
+                camera.setAutoFocus(false);
+            }
+        }else {
+            return false;
+        }
+
+        System.out.println("Ändrar autofokus.");
+        return true;
+    }
+
+    private boolean changeCameraSoundInput(Camera itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        for(Item item : itemsWithName) {
+            Camera camera = (Camera) item;
+            camera.setSoundInput(newChange);
+        }
+        System.out.println("Ändrar ljudingång.");
+        return true;
+    }
+
+    private boolean changeAccessoryFor(Accessory itemToManage, String newChange) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        Class<? extends Item> newClass;
+        if(newChange.equalsIgnoreCase("kamera")){
+            newClass = Camera.class;
+
+        }else if(newChange.equalsIgnoreCase("ljus")){
+            newClass = Light.class;
+        }else if(newChange.equalsIgnoreCase("mikrofon")){
+            newClass = Light.class;
+        }else {
+            System.out.println("Klass finns inte, se till att du stavat rätt annars kontakta support!");
+            return false;
+        }
+        for(Item item : itemsWithName) {
+            Accessory accessory = (Accessory) item;
+            accessory.setAccessoryForType(newClass);
+        }
+
+        System.out.println("Ändrar accessoar för.");
+        return true;
+    }
+
+    private boolean changeItemDailyRate(Item itemToManage, String newDailyRateString) {
+        try {
+            double newDailyRate = Double.parseDouble(newDailyRateString);
+
+            List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+
+            for (Item item : itemsWithName) {
+                item.setDailyRate(newDailyRate);
+            }
+            System.out.println("Ändrar märke.");
+            return true;
+        }catch (NumberFormatException e){
+            System.out.println("Fel värde, skriv in ett tal. Använd '.' som decimaltecken.");
+            return false;
+        }
+    }
+
+
+    private boolean changeItemDescription(Item itemToManage, String newDescription) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        for(Item item : itemsWithName) {
+            item.setDescription(newDescription);
+        }
+        System.out.println("Ändrar beskrivning.");
+        return true;
+    }
+
+    private boolean changeItemBrand(Item itemToManage, String newBrand) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        for(Item item : itemsWithName) {
+            item.setBrand(newBrand);
+        }
+        System.out.println("Ändrar märke.");
+        return true;
+    }
+
+    private boolean changeItemName(Item itemToManage, String newName) {
+        List<Item> itemsWithName = rentalService.getAllItemsByName(itemToManage.getName());
+        for(Item item : itemsWithName) {
+            item.setName(newName);
+        }
+        System.out.println("Ändrar namn.");
+        return true;
+    }
+
+    /**
+     * Huvudmetod för att skapa ny produkt.
+     * Användare väljer kategori och baserat på det skickas vidare till andra metoder
+     * @return den nyskapde produkten
+     */
+    private Item createNewItem() {
+        boolean choosing = true;
+        do {
+            System.out.println("""
+                    [1] Kameror
+                    [2] Ljus
+                    [3] Mikrofoner
+                    [4] Accessoarer
+                    [0] Tillbaka""");
+            System.out.println("Vilken kategori tillhör objektet?");
+            try {
+                int input = getInputIntMenu("Välj kategori produkten ska tillhöra", 4, 0);
+                switch (input) {
+                    case 1 -> {
+                        System.out.println("Skapar ny kamera.");
+                        return createNewCamera();
+                    }
+                    case 2 -> {
+                        System.out.println("Skapar nytt ljus.");
+                        return createNewLight();
+                    }
+                    case 3 -> {
+                        System.out.println("Skapar ny mikrofon.");
+                        return createNewMicrophone();
+                    }
+                    case 4 -> {
+                        System.out.println("Skapar ny accessoar.");
+                        return createNewAccessory();
+                    }
+                    case 0 -> choosing = false;
+                    default -> System.out.println("Skriv in ett giltigt alternativ");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }while (choosing);
+        return null;
+    }
+
+
+    private Accessory createNewAccessory() {
+        try {
+            String name = getInputNotEmpty("Namn");
+            //TODO om namnet är lika föreslå att göra kopia på existerande objekt
+
+            String brand = getInputNotEmpty("Märke");
+
+            String description = getInputNotEmpty("Beskrivning av produkt");
+
+            double dailyRate = getInputDouble("Kostnad/dygn");
+
+            Class<? extends Item> accessoryFor;
+            System.out.println("""
+                    [1] Kameror
+                    [2] Ljus
+                    [3] Mikrofoner
+                    """);
+            switch (getInputIntMenu("Accessoar för",3,1)) {
+                case 1 -> accessoryFor = Camera.class;
+                case 2 -> accessoryFor = Light.class;
+                case 3 -> accessoryFor = Microphone.class;
+                default ->
+                        throw new IllegalStateException("Unexpected value!");
+            }
+
+            return new Accessory(true, dailyRate, name, brand, description, accessoryFor);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Microphone createNewMicrophone() {
+        try {
+            String name = getInputNotEmpty("Namn");
+            //TODO om namnet är lika föreslå att göra kopia på existerande objekt
+
+            String brand = getInputNotEmpty("Märke");
+
+            String description = getInputNotEmpty("Beskrivning av produkt");
+
+            double dailyRate = getInputDouble("Kostnad/dygn");
+
+            boolean wireless = getInputYesOrNo("Trådlös");
+
+            String SoundOutput = getInputNotEmpty("Ljudutgång");
+
+            return new Microphone(true, dailyRate, name, brand, description, wireless, SoundOutput);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Light createNewLight() {
+        try {
+            String name = getInputNotEmpty("Namn");
+            //TODO om namnet är lika föreslå att göra kopia på existerande objekt
+
+            String brand = getInputNotEmpty("Märke");
+
+            String description = getInputNotEmpty("Beskrivning av produkt");
+
+            double dailyRate = getInputDouble("Kostnad/dygn");
+
+            boolean builtInBattery = getInputYesOrNo("Trådlös");
+
+            boolean cameraMountable = getInputYesOrNo("Kamerafästning");
+
+            return new Light(true, dailyRate, name, brand, description, builtInBattery, cameraMountable);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Camera createNewCamera() {
+        try {
+            String name = getInputNotEmpty("Namn");
+            //TODO om namnet är lika föreslå att göra kopia på existerande objekt
+
+            String brand = getInputNotEmpty("Märke");
+
+            String description = getInputNotEmpty("Beskrivning av produkt");
+
+            double dailyRate = getInputDouble("Kostnad/dygn");
+
+            boolean autoFocus = getInputYesOrNo("Autofokus");
+
+            String soundInput = getInputNotEmpty("Ljudingång");
+
+            return new Camera(true, dailyRate, name, brand, description, autoFocus, soundInput);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }
 
-    //Hantera alla medlemmar, kan välja en medlem att gå in och ändra, kan sortera och filtrera listan
+    /**
+     * Hantera alla medlemmar, kan välja en medlem att gå in och ändra, kan sortera och filtrera listan
+     */
     private void manageAllMembers() {
         //memberComparator bestämmer hur members ska skrivas ut
         //pricePolicyFilter filtrerar enligt vald PricePolicy klass (PricePolicy.class inkluderas alla medlemmar som har en level)

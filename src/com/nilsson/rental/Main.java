@@ -128,22 +128,22 @@ samt att skapa ny och hantera befintliga uthyrningar.
                 "Mic Mini (2 TX + 1 RX + Charging Case)",
                 "DJI",
                 "Trådlös mikrofon i ultralätt format för professionell ljudinspelning",
-                "3,5mm",
-                true);
+                true,
+                "3,5mm");
         Microphone microphone2 = new Microphone(true,
                 200,
                 "Mic Mini (2 TX + 1 RX + Charging Case)",
                 "DJI",
                 "Trådlös mikrofon i ultralätt format för professionell ljudinspelning",
-                "3,5mm",
-                true);
+                true,
+                "3,5mm");
         Microphone microphone3 = new Microphone(true,
                 200,
                 "VideoMic NTG",
                 "Røde",
                 "Riktad shotgun-mikrofon med kameramontering",
-                "3,5mm",
-                false);
+                false,
+                "3,5mm");
 
 
         KonsolMenu konsolMenu = new KonsolMenu(new BufferedReader(new InputStreamReader(System.in)));
@@ -172,7 +172,7 @@ samt att skapa ny och hantera befintliga uthyrningar.
         konsolMenu.getRentalService().addItem(microphone2);
         konsolMenu.getRentalService().addItem(microphone3);
 
-        konsolMenu.getRentalService().printCategory(Camera.class);
+        //konsolMenu.getRentalService().printCategory(Camera.class);
 
         konsolMenu.mainMenu();
 

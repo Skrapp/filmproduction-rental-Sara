@@ -71,6 +71,17 @@ public class Inventory {
         return filteredList;
     }
 
+    public boolean isNameInInventory(String name){
+        for(Map.Entry<Class<? extends Item>, List<Item>> entry : itemsInCategories.entrySet()){
+            for(Item item : entry.getValue()){
+                if(item.getName().equalsIgnoreCase(name)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Skriver ut de item som finns i listan som skickas in och hur många som är tillgängliga av dem
      * TODO lägg till hur många som finns totalt (t.ex. 3/5 tillgängliga)
@@ -91,26 +102,16 @@ public class Inventory {
         }
     }
 
-    private int getNumberInStock(Item lookForItem, List<Item> items){
-        int numberInStock = 0;
-        for(Item item : items){
-            if(item.getName().equals(lookForItem.getName()) && item.getBrand().equals(lookForItem.getBrand())
-                    && item.isInStock()){
-                numberInStock++;
+    public List<Item> getItemByName(String name){
+        List<Item> itemsWithName = new ArrayList<>();
+        for(Map.Entry<Class<? extends Item>, List<Item>> entry : itemsInCategories.entrySet()){
+            for(Item item : entry.getValue()){
+                if(item.getName().equalsIgnoreCase(name)){
+                    itemsWithName.add(item);
+                }
             }
         }
-        return numberInStock;
-    }
-
-    private int getNumberNotInStock(Item lookForItem, List<Item> items){
-        int numberNotInStock = 0;
-        for(Item item : items){
-            if(item.getName().equals(lookForItem.getName()) && item.getBrand().equals(lookForItem.getBrand())
-                    && !item.isInStock()){
-                numberNotInStock++;
-            }
-        }
-        return numberNotInStock;
+        return itemsWithName;
     }
 
     /*private List<Item> items;

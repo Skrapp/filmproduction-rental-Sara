@@ -1,16 +1,14 @@
 package com.nilsson.rental.entity.items;
 
-import java.util.Objects;
-
 public class Light extends Item{
-    private boolean wireless;
+    private boolean builtInBattery;
     private boolean cameraMountable;
 
 
     public Light(boolean inStock, double dailyRate, String name, String brand, String description,
-                 boolean wireless, boolean cameraMountable) {
+                 boolean builtInBattery, boolean cameraMountable) {
         super(inStock, dailyRate, name, brand, description);
-        this.wireless = wireless;
+        this.builtInBattery = builtInBattery;
         this.cameraMountable = cameraMountable;
     }
 
@@ -22,12 +20,12 @@ public class Light extends Item{
         return "Ljus";
     }
 
-    public boolean isWireless() {
-        return wireless;
+    public boolean isBuiltInBattery() {
+        return builtInBattery;
     }
 
-    public void setWireless(boolean wireless) {
-        this.wireless = wireless;
+    public void setBuiltInBattery(boolean builtInBattery) {
+        this.builtInBattery = builtInBattery;
     }
 
     public boolean isCameraMountable() {
@@ -41,7 +39,7 @@ public class Light extends Item{
     @Override
     public String toString() {
         return super.toString() + "\n" +
-                "Trådlös: " + ((wireless) ? "Ja":"Nej") +
+                "Inbyggda batterier: " + ((builtInBattery) ? "Ja":"Nej") +
                 ((cameraMountable) ? "\nGår att fästa på kamera" : "");
     }
 }

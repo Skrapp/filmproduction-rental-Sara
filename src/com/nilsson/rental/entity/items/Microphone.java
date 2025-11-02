@@ -5,7 +5,7 @@ public class Microphone extends Item {
     private String soundOutput;
 
     public Microphone(boolean inStock, double dailyRate, String name, String brand, String description,
-                      String soundOutput, boolean wireless) {
+                      boolean wireless, String soundOutput) {
         super(inStock, dailyRate, name, brand, description);
         this.wireless = wireless;
         this.soundOutput = soundOutput;

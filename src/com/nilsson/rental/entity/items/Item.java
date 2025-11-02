@@ -66,7 +66,8 @@ unika attribut och metoder enligt det vi pratat om.*/
     public String toString() {
         return
                 "Kategori: " + this.getCategoryName() + '\n' +
-                        name + " - " + brand + '\n' +
+                        name + '\n' +
+                        "Märke: " + brand + '\n' +
                         "Kostnad/dygn: " + dailyRate + '\n' +
                         "Mer info: " + description;
     }
