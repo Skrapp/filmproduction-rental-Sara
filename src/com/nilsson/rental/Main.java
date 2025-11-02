@@ -1,12 +1,12 @@
 package com.nilsson.rental;
 
-import com.nilsson.rental.dao.*;
 import com.nilsson.rental.entity.*;
-import com.nilsson.rental.pricepolicy.*;
+import com.nilsson.rental.entity.items.*;
+import com.nilsson.rental.entity.pricepolicy.*;
+import com.nilsson.rental.menu.KonsolMenu;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class Main {
 
@@ -31,7 +31,7 @@ samt att skapa ny och hantera befintliga uthyrningar.
 */
     public static void main(String[] args) {
 
-        //Dummy data
+        //Mockup data
         Member m1 = new Member("Lova", new Premium());
         Member m2 = new Member("Clara", new Standard());
         Member m3 = new Member("Simon", new Student());
@@ -39,6 +39,111 @@ samt att skapa ny och hantera befintliga uthyrningar.
         Member m5 = new Member("Gurra", new Standard());
         Member m6 = new Member("Jocke", new Student());
 
+        Accessory accessory1 = new Accessory(true,
+                100,
+                "U-Vlog Lite Extendable Tripod 2109",
+                "Ulanzi",
+                "Kompakt och portabel resestativ",
+                Camera.class);
+        Accessory accessory2 = new Accessory(false,
+                200,
+                "KH26PC Video Tripod Kit",
+                "Benro",
+                "Stabilt och högt videostativ för video- och systemkamera",
+                Camera.class);
+        Accessory accessory3 = new Accessory(false,
+                200,
+                "KH26PC Video Tripod Kit",
+                "Benro",
+                "Stabilt och högt videostativ för video- och systemkamera",
+                Camera.class);
+        Accessory accessory4 = new Accessory(true,
+                50,
+                "LP-E6NH 2130mAh Canon batteri",
+                "Jupio",
+                "Kamerabatteri med extra kapacitet, LP-E6NH till Canon",
+                Camera.class);
+        Accessory accessory5 = new Accessory(true,
+                50,
+                "LP-E6NH 2130mAh Canon batteri",
+                "Jupio",
+                "Kamerabatteri med extra kapacitet, LP-E6NH till Canon",
+                Camera.class);
+        Accessory accessory6 = new Accessory(true,
+                100,
+                "LP-E6NH Duo charger Canon",
+                "Jupio",
+                "Dubbelladdare till LP-E6NH batteri",
+                Camera.class);
+        Accessory accessory7 = new Accessory(true,
+                150,
+                "Sync E multikit",
+                "Tentacle",
+                "Enkel synkronisering av bild och ljud för din nästa multicam-video",
+                Microphone.class);
+        Camera camera1 = new Camera(true,
+                500,
+                "XA70",
+                "Canon",
+                "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
+                true, "XLR");
+        Camera camera2 = new Camera(true,
+                500,
+                "XA70",
+                "Canon",
+                "Professionell och smidig 4K UHD-videokamera med exakt fokusering",
+                true, "XLR");
+        Camera camera3 = new Camera(true,
+                400,
+                "Q8n-4K Handy Video Recorder",
+                "Zoom",
+                "Allt-i-ett videokamera med 4K-upplösning och stereomikrofon",
+                true, "XLR");
+        Camera camera4 = new Camera(true,
+                500,
+                "Legria HF G70",
+                "Canon",
+                "Handhållen 4K-videokamera med 5-axlig bildstabilisering",
+                true, "3,5mm");
+        Light light1 = new Light(true,
+                150,
+                "LT002 7\" RGB LED Video Light B01002",
+                "Ulanzi",
+                "Kraftfull RGB-lampa med olika ljuseffekter för mobil och kamera",
+                true, true);
+        Light light3 = new Light(true,
+                150,
+                "LT002 7\" RGB LED Video Light B01002",
+                "Ulanzi",
+                "Kraftfull RGB-lampa med olika ljuseffekter för mobil och kamera",
+                true, true);
+        Light light2 = new Light(true,
+                300,
+                "SL100D LED Kit",
+                "Godox",
+                "Modernt LED-paket för foto och video",
+                false, false);
+        Microphone microphone1 = new Microphone(true,
+                200,
+                "Mic Mini (2 TX + 1 RX + Charging Case)",
+                "DJI",
+                "Trådlös mikrofon i ultralätt format för professionell ljudinspelning",
+                true,
+                "3,5mm");
+        Microphone microphone2 = new Microphone(true,
+                200,
+                "Mic Mini (2 TX + 1 RX + Charging Case)",
+                "DJI",
+                "Trådlös mikrofon i ultralätt format för professionell ljudinspelning",
+                true,
+                "3,5mm");
+        Microphone microphone3 = new Microphone(true,
+                200,
+                "VideoMic NTG",
+                "Røde",
+                "Riktad shotgun-mikrofon med kameramontering",
+                false,
+                "3,5mm");
 
 
         KonsolMenu konsolMenu = new KonsolMenu(new BufferedReader(new InputStreamReader(System.in)));
@@ -48,6 +153,26 @@ samt att skapa ny och hantera befintliga uthyrningar.
         konsolMenu.getMembershipService().addMember(m4);
         konsolMenu.getMembershipService().addMember(m5);
         konsolMenu.getMembershipService().addMember(m6);
+
+        konsolMenu.getRentalService().addItem(camera1);
+        konsolMenu.getRentalService().addItem(camera2);
+        konsolMenu.getRentalService().addItem(camera3);
+        konsolMenu.getRentalService().addItem(camera4);
+        konsolMenu.getRentalService().addItem(accessory1);
+        konsolMenu.getRentalService().addItem(accessory2);
+        konsolMenu.getRentalService().addItem(accessory3);
+        konsolMenu.getRentalService().addItem(accessory4);
+        konsolMenu.getRentalService().addItem(accessory5);
+        konsolMenu.getRentalService().addItem(accessory6);
+        konsolMenu.getRentalService().addItem(accessory7);
+        konsolMenu.getRentalService().addItem(light1);
+        konsolMenu.getRentalService().addItem(light2);
+        konsolMenu.getRentalService().addItem(light3);
+        konsolMenu.getRentalService().addItem(microphone1);
+        konsolMenu.getRentalService().addItem(microphone2);
+        konsolMenu.getRentalService().addItem(microphone3);
+
+        //konsolMenu.getRentalService().printCategory(Camera.class);
 
         konsolMenu.mainMenu();
 

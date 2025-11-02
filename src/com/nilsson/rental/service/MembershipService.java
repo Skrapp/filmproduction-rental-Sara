@@ -3,7 +3,8 @@ package com.nilsson.rental.service;
 import com.nilsson.rental.dao.MemberRegistry;
 import com.nilsson.rental.entity.Member;
 import com.nilsson.rental.entity.MemberIdComparator;
-import com.nilsson.rental.pricepolicy.PricePolicy;
+import com.nilsson.rental.entity.pricepolicy.Premium;
+import com.nilsson.rental.entity.pricepolicy.PricePolicy;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -12,14 +13,17 @@ import java.util.stream.Collectors;
 
 public class MembershipService {
     /*• MembershipService ska innehålla affärslogiken*/
-    MemberRegistry memberRegistry;
+    private MemberRegistry memberRegistry;
+    private double income;
 
-    public MembershipService(MemberRegistry memberRegistry) {
+    public MembershipService(MemberRegistry memberRegistry, double income) {
         this.memberRegistry = memberRegistry;
+        this.income = income;
     }
 
     public MembershipService() {
         memberRegistry = new MemberRegistry(new MemberIdComparator());
+        income = 0;
     }
 
     public MemberRegistry getMemberRegistry() {
@@ -30,8 +34,14 @@ public class MembershipService {
         this.memberRegistry = memberRegistry;
     }
 
+    public double getIncome() {
+        return income;
+    }
+
     public void addMember(Member member){
         memberRegistry.addMember(member);
+        income += member.getLevel().getFee();
+
     }
 
     public void removeMember(Member member){
@@ -49,13 +59,15 @@ public class MembershipService {
 
     public void changeMemberName(Member member, String newName){
         member.setName(newName);
+
     }
 
     public void changeMemberLevel(Member member, String level){
         member.setStatus(level);
+        income += member.getLevel().getFee();
     }
 
-    ///Skapar en stream som filtrerar members enligt om member (m) level-klass är av samma klass som pricepolicyfilter-klassen
+    ///Skapar en stream som filtrerar members enligt om member(m) level-klass är av samma klass som pricepolicyfilter-klassen
     /// samt filtrerar på sökord i namn
     /// och samlar sedan den som en TreeSet som sorteras med memberComparator
     /// Skriver ut alla members

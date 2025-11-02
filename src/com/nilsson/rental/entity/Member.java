@@ -1,10 +1,10 @@
 package com.nilsson.rental.entity;
 
 import com.nilsson.rental.dao.Rental;
-import com.nilsson.rental.pricepolicy.Premium;
-import com.nilsson.rental.pricepolicy.PricePolicy;
-import com.nilsson.rental.pricepolicy.Standard;
-import com.nilsson.rental.pricepolicy.Student;
+import com.nilsson.rental.entity.pricepolicy.Premium;
+import com.nilsson.rental.entity.pricepolicy.PricePolicy;
+import com.nilsson.rental.entity.pricepolicy.Standard;
+import com.nilsson.rental.entity.pricepolicy.Student;
 
 import java.util.TreeSet;
 
@@ -20,10 +20,12 @@ public class Member implements Comparable<Member>{
         this();
         this.name = name;
         this.level = level;
+
     }
 
     public Member() {
         id = setID();
+        rentalHistory = new TreeSet<>();
     }
 
     //Skapar nytt ID för varje skapat objekt
@@ -50,7 +52,27 @@ public class Member implements Comparable<Member>{
     public void setLevel(PricePolicy level) {
         this.level = level;
     }
-    
+
+    public TreeSet<Rental> getRentalHistory() {
+        return rentalHistory;
+    }
+
+    public void setRentalHistory(TreeSet<Rental> rentalHistory) {
+        this.rentalHistory = rentalHistory;
+    }
+
+    public void addRental(Rental rental){
+        rentalHistory.add(rental);
+    }
+
+    public void printRentalHistory(){
+        for(Rental rental : rentalHistory){
+            System.out.println(rental);
+            System.out.println("Total kostnad för medlem: " + level.applyDiscount(rental.getTotalCost()));
+            System.out.println();
+        }
+    }
+
     public void setStatus(String status){
         switch (status.toLowerCase().trim()){
             case "standard" -> this.level = new Standard();
